@@ -1,7 +1,10 @@
 infinite-proteus
 ================
 
-An experiment in using any textarea editor
+An experiment in using any textarea editor.
+
+This is a JavaScript framework for 
+
 
 Usage
 -----
@@ -14,7 +17,7 @@ Add editors:
 
     proteus.addEditor(editor);
     
-Where an editor is an object with this structure:
+Where an editor is an Object with these options:
 
     name        : String
                   The name of the editor, e.g.: TinyMCE, wysihtml5, ACE, CodeMirror
@@ -42,8 +45,39 @@ Where an editor is an object with this structure:
 Initialize the script:
 
     <script>
-      var options = {
-        textareas: 'textarea[data-use-proteus=1]'  // jquery selector that identifies which textareas to use.
-      };
       proteus.init(options);
     </script>
+
+Options:
+
+    textareas : String (default: 'textarea')
+                jquery selector that identifies which textareas to use, e.g.: 'textarea[data-use-proteus=1]'
+    remember  : Boolean (default: true)
+                Remember the user's editor preferences. Uses localstorage.
+
+Meaningful data attributes:
+
+    data-editor : name of the editor that should be used
+    
+JQuery data created on each textarea:
+
+    _editor : reference to the active editor 
+
+### Tips
+
+If you need to hold onto a variable between an editor's `enable` and its `disable`, you're best bet is to store it
+on the element itself as jquery data.
+
+### Auto-selecting an editor
+
+If the `data-editor` attribute and the editor's name happen to match, that editor's `.enable()` method is run
+immediately, unless user preferences are enabled and the user prefers another editor.
+
+### Remembering preferences
+
+This script will remember the last editor used (including deciding not to an editor) based on the textarea's id
+and the editor's name.
+
+### Widget
+
+A widget will be created and placed near the textarea with buttons to switch between editors.
