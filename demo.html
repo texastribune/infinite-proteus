@@ -4,7 +4,6 @@
   <meta charset=utf-8 />
   <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
   <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet">
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
   <title>Demo</title>
 </head>
 <style>
@@ -29,6 +28,12 @@
         choice of editor will be remembered.
 
       </p>
+      <p>
+
+        Also, I will attempt to remember the textarea contents between page
+        loads. TinyMCE + Chrome doesn't seem to work.
+
+      </p>
     </div>
   </div>
   <div class="row">
@@ -42,6 +47,7 @@
     </div>
   </div>
 
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
   <script>
     // Setup some globals that I reference later in the editors.
     var STATIC_URL = "assets/",
@@ -57,6 +63,30 @@
   <script src="editors/editor.codemirror.js"></script>
   <script>
     superTextareas.init();
+  </script>
+  <script>
+    // Demo JS
+    var store = window.sessionStorage;
+    var save = function(){
+      $('textarea[id]').each(function(){
+        var $this = $(this),
+            editor = $this.data('editorActive');
+
+        try {
+          if (editor){
+            editor.disable(this);
+          }
+        } catch(e){ console.log(e); }
+
+        store.setItem(this.id, $this.val());
+      });
+    };
+    var load = function(){
+      $('textarea').each(function(){
+        this.value = store.getItem(this.id) || '';
+      });
+    };
+    $(window).load(load).on('unload', save);
   </script>
 </body>
 </html>
