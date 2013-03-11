@@ -12336,7 +12336,7 @@ tinymce.create('tinymce.ui.Separator:tinymce.ui.Control', {
 
 			// Accessibility keyhandler
 			Event.add(t.id, 'keydown', function(e) {
-				var bf;
+				var bf, DOM_VK_LEFT = 37, DOM_VK_RIGHT = 39, DOM_VK_UP = 38, DOM_VK_DOWN = 40, DOM_VK_RETURN = 13, DOM_VK_SPACE = 32;
 
 				Event.remove(t.id, 'change', ch);
 				changeListenerAdded = false;
@@ -12348,14 +12348,12 @@ tinymce.create('tinymce.ui.Separator:tinymce.ui.Control', {
 					Event.remove(t.id, 'blur', bf);
 				});
 
-				//prevent default left and right keys on chrome - so that the keyboard navigation is used.
-				if (tinymce.isWebKit && (e.keyCode==37 ||e.keyCode==39)) {
-					return Event.prevent(e);
-				}
-				
-				if (e.keyCode == 13 || e.keyCode == 32) {
+				if (e.keyCode == DOM_VK_RETURN || e.keyCode == DOM_VK_SPACE) {
 					onChange(e);
 					return Event.cancel(e);
+				} else if (e.keyCode == DOM_VK_DOWN || e.keyCode == DOM_VK_UP) {
+					// allow native implementation (navigate select element options)
+					e.stopImmediatePropagation();
 				}
 			});
 
