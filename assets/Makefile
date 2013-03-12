@@ -5,10 +5,7 @@ clean:
 	rm -rf tinymce
 	rm -rf wysihtml5
 
-wysihtml5:
-	mkdir -p wysihtml5
-	cd wysihtml5 && wget https://raw.github.com/texastribune/wysihtml5/dev/dist/wysihtml5-0.4.0pre.js
-	cd wysihtml5 && wget https://raw.github.com/texastribune/wysihtml5/dev/dist/wysihtml5-0.4.0pre.min.js
+# assets: (alphabetical order)
 
 bootstrap-wysihtml5: wysihtml5
 	mkdir -p bootstrap-wysihtml5
@@ -20,6 +17,11 @@ tiny_mce:
 	mkdir -p tinymce
 	cd ../vendor/tinymce && ant
 	cp -r ../vendor/tinymce/jscripts/tiny_mce .
+
+wysihtml5:
+	mkdir -p wysihtml5
+	cd wysihtml5 && wget https://raw.github.com/texastribune/wysihtml5/dev/dist/wysihtml5-0.4.0pre.js
+	cd wysihtml5 && wget https://raw.github.com/texastribune/wysihtml5/dev/dist/wysihtml5-0.4.0pre.min.js
 
 
 .PHONY: build clean
