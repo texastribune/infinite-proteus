@@ -3,7 +3,7 @@ infinite-proteus
 
 An experiment in using any textarea editor.
 
-This is a JavaScript framework for 
+This is a JavaScript framework for
 
 
 Usage
@@ -12,11 +12,11 @@ Usage
 Include the script:
 
     <script src="infinite-proteus.js"></script>
-    
+
 Add editors:
 
     proteus.addEditor(editor);
-    
+
 Where an editor is an Object with these options:
 
     name        : String
@@ -58,10 +58,10 @@ Options:
 Meaningful data attributes:
 
     data-editor : name of the editor that should be used
-    
+
 JQuery data created on each textarea:
 
-    _editor : reference to the active editor 
+    _editor : reference to the active editor
 
 ### Tips
 
@@ -81,3 +81,23 @@ and the editor's name.
 ### Widget
 
 A widget will be created and placed near the textarea with buttons to switch between editors.
+
+### Editors
+
+* Markdown to HTML
+
+https://github.com/coreyti/showdown port of the original
+
+    var converter = new Showdown.converter();
+    converter.makeHTML(markdownText);
+
+
+* HTML To Markdown
+
+https://github.com/domchristie/to-markdown last updated 7 months ago
+
+    var md = toMarkdown(htmlText);
+
+https://github.com/kates/html2markdown last updated 10 months ago
+
+    var md = HTML2Markdown(htmlText);
