@@ -7,7 +7,8 @@
   // CONFIGURATION
 
   // This is the class that gets set on the widget that represents the editor.
-  var ACTIVE_CLASS = 'btn-primary';
+  var ACTIVE_CLASS = 'btn-primary',
+      NAME = 'finiteEruptions';
 
 
   // Default Options
@@ -43,7 +44,7 @@
   // store the user's preferences for editors
   // todo feature detect localStorage among other things
   var storage = window.localStorage,
-      storageKey = 'admin-user-editors',
+      storageKey = NAME,
       NONE = "none";  // should be truthy
   // load preferences from localStorage
   var loadPrefs = function(){
@@ -58,15 +59,15 @@
   // attach listeners
   //
   // whatever widget is in charge of selecting the editor, it should have the
-  // class: `prefs-selector`, and the jQuery data key: `_editor` should be a
+  // class: `prefs-selector`, and the jQuery data key set by `NAME` should be a
   // reference to the editor object.
   var attachPrefs = function($widgetParent){
     // get the id of the textarea the nav controls, this will work for now.
     var key = $widgetParent.parent().find('textarea').attr('id');
     // use deferred events to be super flexible
-    $widgetParent.on("click", ".prefs-selector", function(){
+    $widgetParent.on("click." + NAME, ".prefs-selector", function(){
       var $this = $(this),
-          name = $this.data('_editor').name,
+          name = $this.data(NAME).name,
           active = $this.hasClass(ACTIVE_CLASS);
       prefs[key] = active ? name : NONE;  // store NONE to signify don't use any editors
       savePrefs();
@@ -132,23 +133,23 @@
 
         // TODO set text() of button better
         var control = $("<button class='btn btn-mini prefs-selector' type=button></button>")
-        .html(editor.button || editor.name)
-        .data('_editor', editor);
-        control.click(function(){
-          var activeEditor = $textarea.data('editor-active');
-          if (activeEditor){
-            // console.log("disable", activeEditor.name)
-            activeEditor.disable(textarea, $textarea.data('_ed'));
-            control.removeClass(ACTIVE_CLASS).siblings().removeClass(ACTIVE_CLASS);
-            $textarea.data('editor-active', '');
-          }
-          if (!activeEditor || editor.name != activeEditor.name){
-            // console.log("enable", editor.name)
-            $textarea.data('_ed', editor.enable(textarea));
-            control.addClass(ACTIVE_CLASS);
-            $textarea.data('editor-active', editor);
-          }
-        });
+          .html(editor.button || editor.name)
+          .data(NAME, editor)
+          .on('click.' + NAME, function () {
+            var activeEditor = $textarea.data('editor-active');
+            if (activeEditor){
+              // console.log("disable", activeEditor.name)
+              activeEditor.disable(textarea, $textarea.data('_ed'));
+              control.removeClass(ACTIVE_CLASS).siblings().removeClass(ACTIVE_CLASS);
+              $textarea.data('editor-active', '');
+            }
+            if (!activeEditor || editor.name != activeEditor.name){
+              // console.log("enable", editor.name)
+              $textarea.data('_ed', editor.enable(textarea));
+              control.addClass(ACTIVE_CLASS);
+              $textarea.data('editor-active', editor);
+            }
+          });
 
         placeControls(control, $textarea);
 
