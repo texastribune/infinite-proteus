@@ -1,15 +1,15 @@
 // custom texas tribune implementation of CodeMirror
 
-/*globals $, STATIC_URL, CodeMirror */
+/*globals $, CodeMirror */
 
-(function(exports){
+(function(){
   "use strict";
 
   window.superTextareas.addEditor({
     name: 'CodeMirror',
     isInstalled: function(){ return typeof CodeMirror !== "undefined"; },
-    css: [STATIC_URL + 'codemirror/lib/codemirror.css'],
-    js: [STATIC_URL + 'codemirror/codemirror-compressed.js'],
+    css: ['assets/codemirror/lib/codemirror.css'],
+    js: ['assets/codemirror/codemirror-compressed.js'],
     enable: function(textarea){
       var $textarea = $(textarea),
           dim = {
@@ -31,4 +31,4 @@
     }
   });
 
-})(window);
+})();

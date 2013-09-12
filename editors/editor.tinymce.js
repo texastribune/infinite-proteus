@@ -1,17 +1,17 @@
 // custom texas tribune implementation of tinymce
 
-/*globals STATIC_URL, EDITOR_CSS, tinyMCE */
+/*globals tinyMCE */
 
-(function(exports){
+(function(){
   "use strict";
 
   // TODO replace with the real function later.
-  exports.setup_tt_tinymce = function(){};
+  window.setup_tt_tinymce = function(){};
 
   // tinymce configuration
   var tinymce_opts = {"theme_advanced_toolbar_location": "top",
       "theme_advanced_toolbar_align": "left",
-      "content_css": EDITOR_CSS.join(", "),
+      "content_css": window.EDITOR_CSS.join(", "),
       "setup": "setup_tt_tinymce",
       "theme_advanced_buttons1": "bold,italic,underline,strikethrough,justifyleft,justifycenter,justifyright,|,styleselect,blockquote,bullist,sub,sup,tablecontrols,tt_link,link,unlink,cleanup,code,search,replace,pasteword,help", "theme_advanced_buttons3": "",
       "theme": "advanced",
@@ -27,9 +27,9 @@
   window.superTextareas.addEditor({
     name: 'TinyMCE',
     isInstalled: function(){ return typeof tinyMCE !== "undefined"; },
-    js: [STATIC_URL + "tiny_mce/tiny_mce.js"],
+    js: ["assets/tiny_mce/tiny_mce.js"],
     init: function(){
-      tinyMCE.baseURL = STATIC_URL + "tiny_mce";
+      tinyMCE.baseURL = "assets/tiny_mce";
       tinyMCE.init(tinymce_opts);
     },
     enable: function(textarea){
@@ -41,4 +41,4 @@
     }
   });
 
-})(window);
+})();
