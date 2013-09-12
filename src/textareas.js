@@ -91,7 +91,7 @@
     var $controlGroup = $textarea.closest('.control-group');
     var $container = $controlGroup.children('.btn-group');
     if (!$container.length){
-      $container = $('<div class="btn-group"/>').prependTo($controlGroup);
+      $container = $('<div class="btn-group ' + NAME + '"/>').prependTo($controlGroup);
       if (options.remember){
         attachPrefs($container);
       }
@@ -201,10 +201,28 @@
   };
 
 
+  // tear down self
+  var destroy = function() {
+    // disable any active editors
+    $textareas.each(function (idx, textarea) {
+      var $textarea = $(textarea),
+          activeEditor = $textarea.data(NAME);
+      if (activeEditor) {
+        activeEditor.disable(textarea);
+      }
+    });
+    // turn off event listeners
+    $textareas.off('.' + NAME);
+    // remove UI
+    $('.' + NAME).remove();
+  };
+
+
   // exports
   exports.superTextareas = {
     addEditor: addEditor,
     init: init,
-    forget: clearPrefs
+    forget: clearPrefs,
+    destroy: destroy
   };
 })(window, window.jQuery);

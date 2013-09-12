@@ -55,9 +55,17 @@ Options:
     remember  : Boolean (default: true)
                 Remember the user's editor preferences. Uses localstorage.
 
+Methods:
+
+* `addEditor`
+* `init`
+* `forget`
+* `destroy`
+
+
 Meaningful data attributes:
 
-    data-editor : name of the editor that should be used
+    data-editor : name of the editor that should be used on the textarea
 
 JQuery data created on each textarea:
 
