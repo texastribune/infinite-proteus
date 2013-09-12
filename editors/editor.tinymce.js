@@ -26,7 +26,6 @@
 
   window.superTextareas.addEditor({
     name: 'TinyMCE',
-    isInstalled: function(){ return typeof tinyMCE !== "undefined"; },
     js: ["assets/tiny_mce/tiny_mce.js"],
     init: function(){
       tinyMCE.baseURL = "assets/tiny_mce";

@@ -7,7 +7,6 @@
 
   window.superTextareas.addEditor({
     name: 'CodeMirror',
-    isInstalled: function(){ return typeof CodeMirror !== "undefined"; },
     css: ['assets/codemirror/lib/codemirror.css'],
     js: ['assets/codemirror/codemirror-compressed.js'],
     enable: function(textarea){

@@ -24,7 +24,7 @@ Where an editor is an Object with these options:
     button      : String (optional)
                   The name of the editor to use for the UI. You might want to use 'MD' for the MarkDown editor,
                   Dillinger. *HTML is allowed.*
-    isInstalled : bool Function
+    isInstalled : bool Function (optional if `css` exists)
                   A function that returns a boolean that determines if the editor is installed or not.
     css         : Array (optional)
                   An array of additional CSS that needs to be loaded.

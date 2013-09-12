@@ -101,6 +101,19 @@
     editors.push(configuration);
   };
 
+  // return true if the editor is not installed
+  var editorIsNotInstalled = function (editor) {
+    if (editor.isInstalled) {
+      return !editor.isInstalled();
+    }
+    // TODO have a lazier way of seeing if the resource was already loaded.
+    // Could detect if a resource exists but that won't work for javascript
+    // since jQuery evals instead of injecting script tags. Just do it for css.
+    if (editor.css && editor.css.length) {
+      return !$("link[href*='" + editor.css[0] + "']").length;
+    }
+    return true;
+  };
 
   // Creates the function that does the work of adding an Editor to a textarea.
   var makeOnLoad = function(editor){
@@ -157,7 +170,7 @@
 
     editors.forEach(function(editor){
       editor.onLoad = makeOnLoad(editor);
-      if (!editor.isInstalled()){
+      if (editorIsNotInstalled(editor)){
         console.log("installing", editor.name);
         if (editor.css){
           for (j = 0; j < editor.css.length; j++){
