@@ -139,13 +139,13 @@
             var activeEditor = $textarea.data('editor-active');
             if (activeEditor){
               // console.log("disable", activeEditor.name)
-              activeEditor.disable(textarea, $textarea.data('_ed'));
+              activeEditor.disable(textarea);
               control.removeClass(ACTIVE_CLASS).siblings().removeClass(ACTIVE_CLASS);
               $textarea.data('editor-active', '');
             }
             if (!activeEditor || editor.name != activeEditor.name){
               // console.log("enable", editor.name)
-              $textarea.data('_ed', editor.enable(textarea));
+              editor.enable(textarea);
               control.addClass(ACTIVE_CLASS);
               $textarea.data('editor-active', editor);
             }
@@ -154,9 +154,9 @@
         placeControls(control, $textarea);
 
         // autoload editor
-        var editorToAutoload = (prefs[textarea.id] || $textarea.data('editor') || NONE);
+        var editorToAutoload = (prefs[textarea.id] || $textarea.attr('data-editor') || NONE);
         if (editor.name.toUpperCase() == editorToAutoload.toUpperCase()){
-          $textarea.data('_ed', editor.enable(textarea));
+          editor.enable(textarea);
           control.addClass(ACTIVE_CLASS);
           $textarea.data('editor-active', editor);
         }
