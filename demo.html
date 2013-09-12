@@ -46,12 +46,17 @@
           Also, I will attempt to remember the textarea contents between page
           loads. TinyMCE + Chrome doesn't seem to work.
 
+          <button id="clear-prefs" class="btn">Forget everything</button>
+
         </p>
       </div>
     </div>
     <div class="row">
       <div class="span8 offset2 control-group">
-        <textarea id="id_body" class="span8" rows="15"></textarea>
+        <p>
+          This textarea will use TinyMCE by default because it has <code>[data-editor="tinymce"]</code>
+        </p>
+        <textarea id="id_body" class="span8" rows="15" data-editor="tinymce"></textarea>
       </div>
     </div>
     <div class="row">
@@ -80,6 +85,8 @@
   </script>
   <script>
     // Demo JS
+
+    // save textarea content between reloads
     var store = window.sessionStorage;
     var save = function(){
       $('textarea[id]').each(function(){
@@ -101,6 +108,11 @@
       });
     };
     $(window).load(load).on('unload', save);
+
+    $('#clear-prefs').click(function () {
+      superTextareas.forget();  // hook up `forget` method.
+      store.clear();
+    });
   </script>
 </body>
 </html>

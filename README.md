@@ -75,8 +75,10 @@ immediately, unless user preferences are enabled and the user prefers another ed
 
 ### Remembering preferences
 
-This script will remember the last editor used (including deciding not to an editor) based on the textarea's id
-and the editor's name.
+This script will remember the last editor used (including deciding not to an
+editor) based on the textarea's id and the editor's name.
+
+To clear preferences, hook up the `proteus.forget()` method.
 
 ### Widget
 

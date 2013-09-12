@@ -72,6 +72,10 @@
       savePrefs();
     });
   };
+  // clear preferences
+  var clearPrefs = function() {
+    storage.removeItem(storageKey);
+  };
 
 
   // SUPER WYSIWYG BROTHERS
@@ -199,6 +203,7 @@
   // exports
   exports.superTextareas = {
     addEditor: addEditor,
-    init: init
+    init: init,
+    forget: clearPrefs
   };
 })(window, window.jQuery);
