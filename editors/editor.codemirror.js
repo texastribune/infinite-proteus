@@ -27,6 +27,7 @@
       var ed_ref = $(textarea).data('_ed_cm');
       ed_ref.save();
       ed_ref.toTextArea();
+      $(textarea).removeData('_ed_cm');
     }
   });
 

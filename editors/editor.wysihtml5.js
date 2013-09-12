@@ -166,7 +166,11 @@
     },
     disable: function(textarea){
       // HACK: I couldn't find the official way to remove the editor.
-      $(textarea).show().siblings('.wysihtml5-sandbox, .wysihtml5-toolbar').remove().data('wysihtml5', undefined);
+      $(textarea)
+        .show()
+        .removeData('wysihtml5')
+        .siblings('.wysihtml5-sandbox, .wysihtml5-toolbar').remove();
+
     }
   });
 
