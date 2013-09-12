@@ -61,7 +61,7 @@ Meaningful data attributes:
 
 JQuery data created on each textarea:
 
-    _editor : reference to the active editor
+    finiteEruptions : reference to the active editor
 
 ### Tips
 

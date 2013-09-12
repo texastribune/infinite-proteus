@@ -136,18 +136,18 @@
           .html(editor.button || editor.name)
           .data(NAME, editor)
           .on('click.' + NAME, function () {
-            var activeEditor = $textarea.data('editor-active');
+            var activeEditor = $textarea.data(NAME);
             if (activeEditor){
               // console.log("disable", activeEditor.name)
               activeEditor.disable(textarea);
               $control.removeClass(ACTIVE_CLASS).siblings().removeClass(ACTIVE_CLASS);
-              $textarea.data('editor-active', '');
+              $textarea.data(NAME, '');
             }
             if (!activeEditor || editor.name != activeEditor.name){
               // console.log("enable", editor.name)
               editor.enable(textarea);
               $control.addClass(ACTIVE_CLASS);
-              $textarea.data('editor-active', editor);
+              $textarea.data(NAME, editor);
             }
           });
 
@@ -158,7 +158,7 @@
         if (editor.name.toUpperCase() == editorToAutoload.toUpperCase()){
           editor.enable(textarea);
           $control.addClass(ACTIVE_CLASS);
-          $textarea.data('editor-active', editor);
+          $textarea.data(NAME, editor);
         }
       });
     };
