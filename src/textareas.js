@@ -132,7 +132,7 @@
         var $textarea = $(textarea);
 
         // TODO set text() of button better
-        var control = $("<button class='btn btn-mini prefs-selector' type=button></button>")
+        var $control = $("<button class='btn btn-mini prefs-selector' type=button></button>")
           .html(editor.button || editor.name)
           .data(NAME, editor)
           .on('click.' + NAME, function () {
@@ -140,24 +140,24 @@
             if (activeEditor){
               // console.log("disable", activeEditor.name)
               activeEditor.disable(textarea);
-              control.removeClass(ACTIVE_CLASS).siblings().removeClass(ACTIVE_CLASS);
+              $control.removeClass(ACTIVE_CLASS).siblings().removeClass(ACTIVE_CLASS);
               $textarea.data('editor-active', '');
             }
             if (!activeEditor || editor.name != activeEditor.name){
               // console.log("enable", editor.name)
               editor.enable(textarea);
-              control.addClass(ACTIVE_CLASS);
+              $control.addClass(ACTIVE_CLASS);
               $textarea.data('editor-active', editor);
             }
           });
 
-        placeControls(control, $textarea);
+        placeControls($control, $textarea);
 
         // autoload editor
         var editorToAutoload = (prefs[textarea.id] || $textarea.attr('data-editor') || NONE);
         if (editor.name.toUpperCase() == editorToAutoload.toUpperCase()){
           editor.enable(textarea);
-          control.addClass(ACTIVE_CLASS);
+          $control.addClass(ACTIVE_CLASS);
           $textarea.data('editor-active', editor);
         }
       });
