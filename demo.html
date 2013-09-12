@@ -2,23 +2,22 @@
 <html>
 <head>
   <meta charset=utf-8 />
-  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
-  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet">
+  <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
   <title>Demo</title>
+  <style>
+    body {
+      background: #CCC;
+    }
+    .CodeMirror, .wysihtml5-sandbox {
+      background: white;
+    }
+  </style>
 </head>
-<style>
-  body {
-    background: #CCC;
-  }
-  .CodeMirror, .wysihtml5-sandbox {
-    background: white;
-  }
-</style>
 <body>
   <div class="navbar">
     <div class="navbar-inner">
       <div class="container">
-        <a href="" class="brand">TBD</a>
+        <a href="#" class="brand">TBD</a>
         <div class="nav-collapse collapse">
           <ul class="nav">
             <li>
@@ -38,8 +37,8 @@
         <p>
 
           Here we have two textareas. You should be able to choose between
-          multiple editors, or no editor at all. And if you refresh the page, your
-          choice of editor will be remembered.
+          multiple editors, or no editor at all. And if you refresh the page,
+          your choice of editor will be remembered.
 
         </p>
         <p>
@@ -47,12 +46,17 @@
           Also, I will attempt to remember the textarea contents between page
           loads. TinyMCE + Chrome doesn't seem to work.
 
+          <button id="clear-prefs" class="btn">Forget everything</button>
+
         </p>
       </div>
     </div>
     <div class="row">
       <div class="span8 offset2 control-group">
-        <textarea id="id_body" class="span8" rows="15"></textarea>
+        <p>
+          This textarea will use TinyMCE by default because it has <code>[data-editor="tinymce"]</code>
+        </p>
+        <textarea id="id_body" class="span8" rows="15" data-editor="tinymce"></textarea>
       </div>
     </div>
     <div class="row">
@@ -62,14 +66,13 @@
     </div>
   </div>
 
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
   <script>
     // Setup some globals that I reference later in the editors.
-    var STATIC_URL = "assets/",
-        EDITOR_CSS = [
-          STATIC_URL + "css/reset.css",
-          STATIC_URL + "css/texastribune.css",
-          STATIC_URL + "css/editorial.css"
+    var EDITOR_CSS = [
+          "assets/css/reset.css",
+          "assets/css/texastribune.css",
+          "assets/css/editorial.css"
         ];
   </script>
   <script src="src/textareas.js"></script>
@@ -82,6 +85,8 @@
   </script>
   <script>
     // Demo JS
+
+    // save textarea content between reloads
     var store = window.sessionStorage;
     var save = function(){
       $('textarea[id]').each(function(){
@@ -103,6 +108,11 @@
       });
     };
     $(window).load(load).on('unload', save);
+
+    $('#clear-prefs').click(function () {
+      superTextareas.forget();  // hook up `forget` method.
+      store.clear();
+    });
   </script>
 </body>
 </html>

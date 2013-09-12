@@ -1,8 +1,8 @@
 // custom texas tribune implementation of bootstrap-wysihtml5
 
-/*globals $, STATIC_URL, EDITOR_CSS */
+/*globals $ */
 
-(function(exports, superTextareas){
+(function(){
   "use strict";
 
   // TODO replace with the real function later.
@@ -131,10 +131,9 @@
       };
   window.superTextareas.addEditor({
     name: 'wysihtml5',
-    isInstalled: function(){ return typeof wysihtml5 !== "undefined"; },
-    css: [STATIC_URL + 'bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.css'],
-    js: [STATIC_URL + "wysihtml5/wysihtml5-0.4.0pre.js",
-         STATIC_URL + "bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.js"],
+    css: ['assets/bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.css'],
+    js: ['assets/wysihtml5/wysihtml5-0.4.0pre.js',
+         'assets/bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.js'],
     init: function(){
       setup_tt_wysihtml5();
     },
@@ -146,7 +145,7 @@
         // wysihtml options
         composerClassName: 'prose',
         style: false,
-        stylesheets: EDITOR_CSS,
+        stylesheets: window.EDITOR_CSS,
         parserRules: wysihtml5ParserRules,
         useLineBreaks: false
       };
@@ -167,8 +166,12 @@
     },
     disable: function(textarea){
       // HACK: I couldn't find the official way to remove the editor.
-      $(textarea).show().siblings('.wysihtml5-sandbox, .wysihtml5-toolbar').remove().data('wysihtml5', undefined);
+      $(textarea)
+        .show()
+        .removeData('wysihtml5')
+        .siblings('.wysihtml5-sandbox, .wysihtml5-toolbar').remove();
+
     }
   });
 
-})(window, superTextareas);
+})();

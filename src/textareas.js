@@ -7,7 +7,8 @@
   // CONFIGURATION
 
   // This is the class that gets set on the widget that represents the editor.
-  var ACTIVE_CLASS = 'btn-primary';
+  var ACTIVE_CLASS = 'btn-primary',
+      NAME = 'finiteEruptions';
 
 
   // Default Options
@@ -43,7 +44,7 @@
   // store the user's preferences for editors
   // todo feature detect localStorage among other things
   var storage = window.localStorage,
-      storageKey = 'admin-user-editors',
+      storageKey = NAME,
       NONE = "none";  // should be truthy
   // load preferences from localStorage
   var loadPrefs = function(){
@@ -58,19 +59,23 @@
   // attach listeners
   //
   // whatever widget is in charge of selecting the editor, it should have the
-  // class: `prefs-selector`, and the jQuery data key: `_editor` should be a
+  // class: `prefs-selector`, and the jQuery data key set by `NAME` should be a
   // reference to the editor object.
   var attachPrefs = function($widgetParent){
     // get the id of the textarea the nav controls, this will work for now.
     var key = $widgetParent.parent().find('textarea').attr('id');
     // use deferred events to be super flexible
-    $widgetParent.on("click", ".prefs-selector", function(){
+    $widgetParent.on("click." + NAME, ".prefs-selector", function(){
       var $this = $(this),
-          name = $this.data('_editor').name,
+          name = $this.data(NAME).name,
           active = $this.hasClass(ACTIVE_CLASS);
       prefs[key] = active ? name : NONE;  // store NONE to signify don't use any editors
       savePrefs();
     });
+  };
+  // clear preferences
+  var clearPrefs = function() {
+    storage.removeItem(storageKey);
   };
 
 
@@ -86,7 +91,7 @@
     var $controlGroup = $textarea.closest('.control-group');
     var $container = $controlGroup.children('.btn-group');
     if (!$container.length){
-      $container = $('<div class="btn-group"/>').prependTo($controlGroup);
+      $container = $('<div class="btn-group ' + NAME + '"/>').prependTo($controlGroup);
       if (options.remember){
         attachPrefs($container);
       }
@@ -101,6 +106,19 @@
     editors.push(configuration);
   };
 
+  // return true if the editor is not installed
+  var editorIsNotInstalled = function (editor) {
+    if (editor.isInstalled) {
+      return !editor.isInstalled();
+    }
+    // TODO have a lazier way of seeing if the resource was already loaded.
+    // Could detect if a resource exists but that won't work for javascript
+    // since jQuery evals instead of injecting script tags. Just do it for css.
+    if (editor.css && editor.css.length) {
+      return !$("link[href*='" + editor.css[0] + "']").length;
+    }
+    return true;
+  };
 
   // Creates the function that does the work of adding an Editor to a textarea.
   var makeOnLoad = function(editor){
@@ -114,33 +132,33 @@
         var $textarea = $(textarea);
 
         // TODO set text() of button better
-        var control = $("<button class='btn btn-mini prefs-selector' type=button></button>")
-        .html(editor.button || editor.name)
-        .data('_editor', editor);
-        control.click(function(){
-          var activeEditor = $textarea.data('editor-active');
-          if (activeEditor){
-            // console.log("disable", activeEditor.name)
-            activeEditor.disable(textarea, $textarea.data('_ed'));
-            control.removeClass(ACTIVE_CLASS).siblings().removeClass(ACTIVE_CLASS);
-            $textarea.data('editor-active', '');
-          }
-          if (!activeEditor || editor.name != activeEditor.name){
-            // console.log("enable", editor.name)
-            $textarea.data('_ed', editor.enable(textarea));
-            control.addClass(ACTIVE_CLASS);
-            $textarea.data('editor-active', editor);
-          }
-        });
+        var $control = $("<button class='btn btn-mini prefs-selector' type=button></button>")
+          .html(editor.button || editor.name)
+          .data(NAME, editor)
+          .on('click.' + NAME, function () {
+            var activeEditor = $textarea.data(NAME);
+            if (activeEditor){
+              // console.log("disable", activeEditor.name)
+              activeEditor.disable(textarea);
+              $control.removeClass(ACTIVE_CLASS).siblings().removeClass(ACTIVE_CLASS);
+              $textarea.data(NAME, '');
+            }
+            if (!activeEditor || editor.name != activeEditor.name){
+              // console.log("enable", editor.name)
+              editor.enable(textarea);
+              $control.addClass(ACTIVE_CLASS);
+              $textarea.data(NAME, editor);
+            }
+          });
 
-        placeControls(control, $textarea);
+        placeControls($control, $textarea);
 
         // autoload editor
-        var editorToAutoload = (prefs[textarea.id] || $textarea.data('editor') || NONE);
+        var editorToAutoload = (prefs[textarea.id] || $textarea.attr('data-editor') || NONE);
         if (editor.name.toUpperCase() == editorToAutoload.toUpperCase()){
-          $textarea.data('_ed', editor.enable(textarea));
-          control.addClass(ACTIVE_CLASS);
-          $textarea.data('editor-active', editor);
+          editor.enable(textarea);
+          $control.addClass(ACTIVE_CLASS);
+          $textarea.data(NAME, editor);
         }
       });
     };
@@ -157,7 +175,7 @@
 
     editors.forEach(function(editor){
       editor.onLoad = makeOnLoad(editor);
-      if (!editor.isInstalled()){
+      if (editorIsNotInstalled(editor)){
         console.log("installing", editor.name);
         if (editor.css){
           for (j = 0; j < editor.css.length; j++){
@@ -183,9 +201,28 @@
   };
 
 
+  // tear down self
+  var destroy = function() {
+    // disable any active editors
+    $textareas.each(function (idx, textarea) {
+      var $textarea = $(textarea),
+          activeEditor = $textarea.data(NAME);
+      if (activeEditor) {
+        activeEditor.disable(textarea);
+      }
+    });
+    // turn off event listeners
+    $textareas.off('.' + NAME);
+    // remove UI
+    $('.' + NAME).remove();
+  };
+
+
   // exports
   exports.superTextareas = {
     addEditor: addEditor,
-    init: init
+    init: init,
+    forget: clearPrefs,
+    destroy: destroy
   };
 })(window, window.jQuery);

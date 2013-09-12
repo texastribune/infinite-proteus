@@ -1,18 +1,18 @@
 // custom texas tribune implementation of a basic markdown editor
 
-/*globals $, STATIC_URL, EDITOR_CSS, toMarkdown, Showdown */
+/*globals $, toMarkdown, Showdown */
 
-(function(exports, superTextareas){
+(function(){
   "use strict";
 
   var converter;
 
-  exports.superTextareas.addEditor({
+  window.superTextareas.addEditor({
     name: 'Markdown',
     button: 'Md',
     isInstalled: function(){ return typeof toMarkdown !== "undefined"; },
-    js: [STATIC_URL + 'showdown/showdown.js',
-         STATIC_URL + 'to-markdown/to-markdown.js'],
+    js: ['assets/showdown/showdown.js',
+         'assets/to-markdown/to-markdown.js'],
     init: function(){
       converter = new Showdown.converter();
     },
@@ -28,5 +28,4 @@
     }
   });
 
-
-})(window, superTextareas);
+})();
