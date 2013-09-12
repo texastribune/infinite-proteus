@@ -1,8 +1,8 @@
 // custom texas tribune implementation of a basic markdown editor
 
-/*globals $, STATIC_URL, EDITOR_CSS, toMarkdown, Showdown */
+/*globals $, STATIC_URL, toMarkdown, Showdown */
 
-(function(exports, superTextareas){
+(function(exports){
   "use strict";
 
   var converter;
@@ -29,4 +29,4 @@
   });
 
 
-})(window, superTextareas);
+})(window);

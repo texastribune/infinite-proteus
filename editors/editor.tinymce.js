@@ -1,8 +1,8 @@
 // custom texas tribune implementation of tinymce
 
-/*globals $, STATIC_URL, EDITOR_CSS, tinyMCE */
+/*globals STATIC_URL, EDITOR_CSS, tinyMCE */
 
-(function(exports, superTextareas){
+(function(exports){
   "use strict";
 
   // TODO replace with the real function later.
@@ -24,7 +24,7 @@
   // remove: elements, language, spellcheck
   tinymce_opts.mode = "none";
 
-  superTextareas.addEditor({
+  window.superTextareas.addEditor({
     name: 'TinyMCE',
     isInstalled: function(){ return typeof tinyMCE !== "undefined"; },
     js: [STATIC_URL + "tiny_mce/tiny_mce.js"],
@@ -41,4 +41,4 @@
     }
   });
 
-})(window, superTextareas);
+})(window);

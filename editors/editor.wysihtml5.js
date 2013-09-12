@@ -2,7 +2,7 @@
 
 /*globals $, STATIC_URL, EDITOR_CSS */
 
-(function(exports, superTextareas){
+(function(exports){
   "use strict";
 
   // TODO replace with the real function later.
@@ -171,4 +171,4 @@
     }
   });
 
-})(window, superTextareas);
+})(window);

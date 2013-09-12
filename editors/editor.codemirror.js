@@ -1,8 +1,8 @@
 // custom texas tribune implementation of CodeMirror
 
-/*globals $, STATIC_URL, EDITOR_CSS, CodeMirror */
+/*globals $, STATIC_URL, CodeMirror */
 
-(function(exports, superTextareas){
+(function(exports){
   "use strict";
 
   window.superTextareas.addEditor({
@@ -31,4 +31,4 @@
     }
   });
 
-})(window, superTextareas);
+})(window);
