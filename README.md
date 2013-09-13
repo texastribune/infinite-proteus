@@ -3,7 +3,8 @@ infinite-proteus
 
 An experiment in using any textarea editor.
 
-This is a JavaScript framework for
+This is a JavaScript framework for giving users control of what editor they
+prefer using.
 
 
 Usage
@@ -20,12 +21,14 @@ Add editors:
 Where an editor is an Object with these options:
 
     name        : String
-                  The name of the editor, e.g.: TinyMCE, wysihtml5, ACE, CodeMirror
+                  The name of the editor, e.g.: TinyMCE, wysihtml5, CodeMirror
     button      : String (optional)
-                  The name of the editor to use for the UI. You might want to use 'MD' for the MarkDown editor,
+                  The name of the editor to use for the UI. You might want to
+                  use 'MD' for the MarkDown editor,
                   Dillinger. *HTML is allowed.*
     isInstalled : bool Function (optional if `css` exists)
-                  A function that returns a boolean that determines if the editor is installed or not.
+                  A function that returns a boolean that determines if the
+                  editor is installed or not.
     css         : Array (optional)
                   An array of additional CSS that needs to be loaded.
     js          : Array (optional)
@@ -34,11 +37,13 @@ Where an editor is an Object with these options:
                   A function that should be run immediately.
     enable      : void Function
                     @param element  The DOM Node for the source textarea element
-                  The code that's needed to turn a textarea into the editor. For TinyMCE, this would look like:
+                  The code that's needed to turn a textarea into the editor. For
+                  TinyMCE, this would look like:
                       tinyMCE.execCommand('mceAddControl', false, element.id);
     disable     : void Function
                     @param element  The DOM Node for the source textarea element
-                  The code that's needed to revert back into a textarea. For TinyMCE, this would look like:
+                  The code that's needed to revert back into a textarea. For
+                  TinyMCE, this would look like:
                       tinyMCE.execCommand('mceRemoveControl', false, element.id);
 
 
@@ -51,35 +56,42 @@ Initialize the script:
 Options:
 
     textareas : String (default: 'textarea')
-                jquery selector that identifies which textareas to use, e.g.: 'textarea[data-use-proteus=1]'
+                jquery selector that identifies which textareas to use, e.g.:
+                'textarea[data-use-proteus=1]'
     remember  : Boolean (default: true)
-                Remember the user's editor preferences. Uses localstorage.
+                Remember the user's editor preferences. Requires HTML5
+                localstorage. Users' preferences override the default editor.
 
 Methods:
 
-* `addEditor`
-* `init`
-* `forget`
-* `destroy`
+* `addEditor` : Add an editor, see above.
+* `init`      : Start the script.
+* `forget`    : Forget user preferences.
+* `destroy`   : Stop the script, remove all editors.
 
 
-Meaningful data attributes:
+Meaningful data attributes on the `<textarea>` element:
 
     data-editor : name of the editor that should be used on the textarea
 
-JQuery data created on each textarea:
+jQuery data created on each textarea:
 
     finiteEruptions : reference to the active editor
 
 ### Tips
 
-If you need to hold onto a variable between an editor's `enable` and its `disable`, you're best bet is to store it
-on the element itself as jquery data.
+If you need to hold onto a variable between an editor's `enable` and its
+`disable`, you're best bet is to store it on the element itself as jQuery data.
+For an example, see the [codemirror editor].
+
+  [codemirror editor]: https://github.com/texastribune/infinite-proteus/blob/master/editors/editor.codemirror.js
+
 
 ### Auto-selecting an editor
 
-If the `data-editor` attribute and the editor's name happen to match, that editor's `.enable()` method is run
-immediately, unless user preferences are enabled and the user prefers another editor.
+If the `data-editor` attribute and the editor's name happen to match, that
+editor's `.enable()` method is run immediately, unless user preferences are
+enabled and the user prefers another editor.
 
 ### Remembering preferences
 
@@ -90,9 +102,10 @@ To clear preferences, hook up the `proteus.forget()` method.
 
 ### Widget
 
-A widget will be created and placed near the textarea with buttons to switch between editors.
+A widget will be created and placed near the textarea with buttons to switch
+between editors.
 
-### Editors
+### Sample Editors
 
 * Markdown to HTML
 
