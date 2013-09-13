@@ -41,41 +41,50 @@
     load(resources, callback);
   };
 
+
   // store the user's preferences for editors
-  // todo feature detect localStorage among other things
-  var storage = window.localStorage,
-      storageKey = NAME,
-      NONE = "none";  // should be truthy
+  //
+  // The raw data is stored in the `data` attribute as a key/value of the
+  // textarea id/editor name.
+  var Prefs = function () {
+    this.NONE = "none";  // should be truthy
+    // WISHLIST feature detect localStorage among other things
+    this.storage = window.localStorage;  // storage backend
+    this.storageKey = NAME;
+    this.data = undefined;
+    this.load();
+  };
   // load preferences from localStorage
-  var loadPrefs = function(){
+  Prefs.prototype.load = function () {
     var defaultPrefs = {},
-        v = storage.getItem(storageKey);
-    return v ? JSON.parse(v) : defaultPrefs;
+        v = this.storage.getItem(this.storageKey);
+    this.data = v ? JSON.parse(v) : defaultPrefs;
   };
   // save preferences to localStorage
-  var savePrefs = function(){
-    storage.setItem(storageKey, JSON.stringify(prefs));
+  Prefs.prototype.save = function () {
+    this.storage.setItem(this.storageKey, JSON.stringify(this.data));
   };
   // attach listeners
   //
   // whatever widget is in charge of selecting the editor, it should have the
-  // class: `prefs-selector`, and the jQuery data key set by `NAME` should be a
-  // reference to the editor object.
-  var attachPrefs = function($widgetParent){
+  // class: `prefs-selector`, and the jQuery data (key: finiteEruptions) should
+  // be a reference to the editor object.
+  Prefs.prototype.attachTo = function ($widgetParent) {
     // get the id of the textarea the nav controls, this will work for now.
-    var key = $widgetParent.parent().find('textarea').attr('id');
+    var self = this,
+        key = $widgetParent.parent().find('textarea').attr('id');
     // use deferred events to be super flexible
     $widgetParent.on("click." + NAME, ".prefs-selector", function(){
       var $this = $(this),
           name = $this.data(NAME).name,
           active = $this.hasClass(ACTIVE_CLASS);
-      prefs[key] = active ? name : NONE;  // store NONE to signify don't use any editors
-      savePrefs();
+      self.data[key] = active ? name : self.NONE;  // store NONE to signify don't use any editors
+      self.save();
     });
   };
   // clear preferences
-  var clearPrefs = function() {
-    storage.removeItem(storageKey);
+  Prefs.prototype.clear = function () {
+    this.storage.removeItem(this.storageKey);
   };
 
 
@@ -93,7 +102,7 @@
     if (!$container.length){
       $container = $('<div class="btn-group ' + NAME + '"/>').prependTo($controlGroup);
       if (options.remember){
-        attachPrefs($container);
+        prefs.attachTo($container);
       }
     }
     $container.append($control);
@@ -154,7 +163,7 @@
         placeControls($control, $textarea);
 
         // autoload editor
-        var editorToAutoload = (prefs[textarea.id] || $textarea.attr('data-editor') || NONE);
+        var editorToAutoload = (prefs[textarea.id] || $textarea.attr('data-editor') || prefs.NONE);
         if (editor.name.toUpperCase() == editorToAutoload.toUpperCase()){
           editor.enable(textarea);
           $control.addClass(ACTIVE_CLASS);
@@ -196,7 +205,7 @@
     });
 
     if (options.remember){
-      prefs = loadPrefs();
+      prefs = new Prefs();
     }
   };
 
@@ -222,7 +231,7 @@
   exports.superTextareas = {
     addEditor: addEditor,
     init: init,
-    forget: clearPrefs,
+    forget: prefs && prefs.clear,
     destroy: destroy
   };
 })(window, window.jQuery);
