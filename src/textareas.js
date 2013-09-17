@@ -86,6 +86,10 @@
   Prefs.prototype.clear = function () {
     this.storage.removeItem(this.storageKey);
   };
+  // get preference for `key`
+  Prefs.prototype.get = function (key) {
+    return this.data[key];
+  };
 
 
   // SUPER WYSIWYG BROTHERS
@@ -163,7 +167,7 @@
         placeControls($control, $textarea);
 
         // autoload editor
-        var editorToAutoload = (prefs[textarea.id] || $textarea.attr('data-editor') || prefs.NONE);
+        var editorToAutoload = (prefs.get(textarea.id) || $textarea.attr('data-editor') || prefs.NONE);
         if (editor.name.toUpperCase() == editorToAutoload.toUpperCase()){
           editor.enable(textarea);
           $control.addClass(ACTIVE_CLASS);
