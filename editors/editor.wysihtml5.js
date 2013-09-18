@@ -129,7 +129,7 @@
           ul: {}
         }
       };
-  window.superTextareas.addEditor({
+  window.infiniteProteus.addEditor({
     name: 'wysihtml5',
     css: ['assets/bootstrap-wysihtml5/bootstrap-wysihtml5-0.0.2.css'],
     js: ['assets/wysihtml5/wysihtml5-0.4.0pre.js',

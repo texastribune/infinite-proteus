@@ -232,7 +232,7 @@
 
 
   // exports
-  exports.superTextareas = {
+  exports.infiniteProteus = {
     addEditor: addEditor,
     init: init,
     forget: prefs && prefs.clear,
