@@ -28,7 +28,13 @@
   //   The function to execute after all the scripts have loaded.
   $.getScripts = function(resources, callback) {
     var load = function(resources, callback){
-      $.when($.getScript(resources.shift())).then(
+      $.when(
+        $.ajax({
+          url: resources.shift(),
+          dataType: "script",
+          cache: true
+        })
+      ).then(
         function(){
           if (resources.length){
             load(resources, callback);
@@ -196,12 +202,7 @@
           }
         }
         if (editor.js){
-          if (editor.js.length > 1) {
-            $.getScripts(editor.js, editor.onLoad);
-          }
-          else {
-            $.getScript(editor.js[0], editor.onLoad);
-          }
+          $.getScripts(editor.js, editor.onLoad);
         }
       } else {
         editor.onLoad();
