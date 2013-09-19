@@ -14,7 +14,15 @@
   // Default Options
   var defaultOptions = {
     textareas: 'textarea',
-    remember: true
+    remember: true,
+    // Template for your UI. There needs to only be one outer element, and the
+    // inner element needs the class `prefs-selector`. The template is
+    // mustache-like with the variable: `{{label}}`.
+    template:
+      '<div class="btn-group">' +
+      '  <button class="btn btn-mini prefs-selector" type=button>{{label}}</button>' +
+      '</div>',
+    _templates: {}  // this is generated based on `template`
   };
 
   // UTILS
@@ -108,9 +116,9 @@
   // Add markup
   var placeControls = function($control, $textarea){
     var $controlGroup = $textarea.closest('.control-group');
-    var $container = $controlGroup.children('.btn-group');
+    var $container = $controlGroup.children('.' + NAME);
     if (!$container.length){
-      $container = $('<div class="btn-group ' + NAME + '"/>').prependTo($controlGroup);
+      $container = $(options._templates.container).addClass(NAME).prependTo($controlGroup);
       if (options.remember){
         prefs.attachTo($container);
       }
@@ -149,8 +157,7 @@
         var $textarea = $(textarea);
 
         // TODO set text() of button better
-        var $control = $("<button class='btn btn-mini prefs-selector' type=button></button>")
-          .html(editor.button || editor.name)
+        var $control = $(options._templates.item.replace('{{label}}', editor.button || editor.name))
           .data(NAME, editor)
           .on('click.' + NAME, function () {
             var activeEditor = $textarea.data(NAME);
@@ -187,6 +194,11 @@
     var j;
 
     options = $.extend({}, defaultOptions, opts || {});
+    // extract juicy bits from template option
+    var $template = $(options.template),
+        $btn = $template.find('.prefs-selector').remove();
+    options._templates.container = $template[0].outerHTML,  // XXX what's outerHTML support?
+    options._templates.item = $btn[0].outerHTML;
     $textareas = $(options.textareas);
     if (!$textareas.length){ return; }
 
