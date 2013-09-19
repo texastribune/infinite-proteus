@@ -1,4 +1,4 @@
-/*jshint loopfunc:false */
+/*jshint loopfunc:false, expr:true */
 /*globals $, console */
 // goes through all textareas and enables optional editors
 (function(exports, $){
@@ -143,9 +143,7 @@
   var makeOnLoad = function(editor){
     return function(){
       // If editor needs to do some initialization, do it now.
-      if (editor.init){
-        editor.init();
-      }
+      editor.init && editor.init();
 
       $textareas.each(function(idx, textarea){
         var $textarea = $(textarea);
