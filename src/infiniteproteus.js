@@ -22,6 +22,19 @@
       '<div class="btn-group">' +
       '  <button class="btn btn-mini prefs-selector" type=button>{{label}}</button>' +
       '</div>',
+
+    // how to get to the UI from the $textarea
+    // @returns $ui
+    getUI: function($textarea) {
+      return $textarea.closest('.control-group').find('.' + NAME);
+    },
+
+    // how to attach the UI to the DOM starting from the $textarea
+    placeUI: function($ui, $textarea) {
+      $ui.prependTo($textarea.closest('.control-group'));
+    },
+
+    // internal options
     _templates: {}  // this is generated based on `template`
   };
 
@@ -114,17 +127,16 @@
       prefs;  // user preferences
 
   // Add markup
-  var placeControls = function($control, $textarea){
-    var $controlGroup = $textarea.closest('.control-group');
-    var $container = $controlGroup.children('.' + NAME);
-    if (!$container.length){
-      $container = $(options._templates.container).addClass(NAME).prependTo($controlGroup);
+  var placeControls = function($btnItem, $textarea){
+    var $ui = options.getUI($textarea);
+    if (!$ui.length){
+      $ui = $(options._templates.container).addClass(NAME);
+      options.placeUI($ui, $textarea);
       if (options.remember){
-        prefs.attachTo($container);
+        prefs.attachTo($ui);
       }
     }
-    $container.append($control);
-    return $control;
+    $btnItem.appendTo($ui);
   };
 
 
