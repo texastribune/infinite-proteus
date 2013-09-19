@@ -96,10 +96,10 @@
   // whatever widget is in charge of selecting the editor, it should have the
   // class: `prefs-selector`, and the jQuery data (key: finiteEruptions) should
   // be a reference to the editor object.
-  Prefs.prototype.attachTo = function ($widgetParent) {
+  Prefs.prototype.attachTo = function ($widgetParent, $textarea) {
     // get the id of the textarea the nav controls, this will work for now.
     var self = this,
-        key = $widgetParent.parent().find('textarea').attr('id');
+        key = $textarea.attr('id');
     // use deferred events to be super flexible
     $widgetParent.on("click." + NAME, ".prefs-selector", function(){
       var $this = $(this),
@@ -133,7 +133,7 @@
       $ui = $(options._templates.container).addClass(NAME);
       options.placeUI($ui, $textarea);
       if (options.remember){
-        prefs.attachTo($ui);
+        prefs.attachTo($ui, $textarea);
       }
     }
     $btnItem.appendTo($ui);
