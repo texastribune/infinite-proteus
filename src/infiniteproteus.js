@@ -100,6 +100,7 @@
     // get the id of the textarea the nav controls, this will work for now.
     var self = this,
         key = $textarea.attr('id');
+    key = window.location.pathname + '#' + key;
     // use deferred events to be super flexible
     $widgetParent.on("click." + NAME, ".prefs-selector", function(){
       var $this = $(this),
@@ -115,6 +116,7 @@
   };
   // get preference for `key`
   Prefs.prototype.get = function (key) {
+    key = window.location.pathname + '#' + key;
     return this.data[key];
   };
 
