@@ -7,7 +7,7 @@
 
   var converter;
 
-  window.superTextareas.addEditor({
+  window.infiniteProteus.addEditor({
     name: 'Markdown',
     button: 'Md',
     isInstalled: function(){ return typeof toMarkdown !== "undefined"; },

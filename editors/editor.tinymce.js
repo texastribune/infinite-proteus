@@ -24,7 +24,7 @@
   // remove: elements, language, spellcheck
   tinymce_opts.mode = "none";
 
-  window.superTextareas.addEditor({
+  window.infiniteProteus.addEditor({
     name: 'TinyMCE',
     js: ["assets/tiny_mce/tiny_mce.js"],
     init: function(){

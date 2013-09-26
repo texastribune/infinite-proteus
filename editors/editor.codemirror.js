@@ -5,7 +5,7 @@
 (function(){
   "use strict";
 
-  window.superTextareas.addEditor({
+  window.infiniteProteus.addEditor({
     name: 'CodeMirror',
     css: ['assets/codemirror/lib/codemirror.css'],
     js: ['assets/codemirror/codemirror-compressed.js'],

@@ -1,4 +1,4 @@
-/*jshint loopfunc:false */
+/*jshint loopfunc:false, expr:true */
 /*globals $, console */
 // goes through all textareas and enables optional editors
 (function(exports, $){
@@ -14,7 +14,28 @@
   // Default Options
   var defaultOptions = {
     textareas: 'textarea',
-    remember: true
+    remember: true,
+    // Template for your UI. There needs to only be one outer element, and the
+    // inner element needs the class `prefs-selector`. The template is
+    // mustache-like with the variable: `{{label}}`.
+    template:
+      '<div class="btn-group">' +
+      '  <button class="btn btn-mini prefs-selector" type=button>{{label}}</button>' +
+      '</div>',
+
+    // how to get to the UI from the $textarea
+    // @returns $ui
+    getUI: function($textarea) {
+      return $textarea.closest('.control-group').find('.' + NAME);
+    },
+
+    // how to attach the UI to the DOM starting from the $textarea
+    placeUI: function($ui, $textarea) {
+      $ui.prependTo($textarea.closest('.control-group'));
+    },
+
+    // internal options
+    _templates: {}  // this is generated based on `template`
   };
 
   // UTILS
@@ -28,7 +49,13 @@
   //   The function to execute after all the scripts have loaded.
   $.getScripts = function(resources, callback) {
     var load = function(resources, callback){
-      $.when($.getScript(resources.shift())).then(
+      $.when(
+        $.ajax({
+          url: resources.shift(),
+          dataType: "script",
+          cache: true
+        })
+      ).then(
         function(){
           if (resources.length){
             load(resources, callback);
@@ -69,10 +96,11 @@
   // whatever widget is in charge of selecting the editor, it should have the
   // class: `prefs-selector`, and the jQuery data (key: finiteEruptions) should
   // be a reference to the editor object.
-  Prefs.prototype.attachTo = function ($widgetParent) {
+  Prefs.prototype.attachTo = function ($widgetParent, $textarea) {
     // get the id of the textarea the nav controls, this will work for now.
     var self = this,
-        key = $widgetParent.parent().find('textarea').attr('id');
+        key = $textarea.attr('id');
+    key = window.location.pathname + '#' + key;
     // use deferred events to be super flexible
     $widgetParent.on("click." + NAME, ".prefs-selector", function(){
       var $this = $(this),
@@ -86,6 +114,11 @@
   Prefs.prototype.clear = function () {
     this.storage.removeItem(this.storageKey);
   };
+  // get preference for `key`
+  Prefs.prototype.get = function (key) {
+    key = window.location.pathname + '#' + key;
+    return this.data[key];
+  };
 
 
   // SUPER WYSIWYG BROTHERS
@@ -96,17 +129,16 @@
       prefs;  // user preferences
 
   // Add markup
-  var placeControls = function($control, $textarea){
-    var $controlGroup = $textarea.closest('.control-group');
-    var $container = $controlGroup.children('.btn-group');
-    if (!$container.length){
-      $container = $('<div class="btn-group ' + NAME + '"/>').prependTo($controlGroup);
+  var placeControls = function($btnItem, $textarea){
+    var $ui = options.getUI($textarea);
+    if (!$ui.length){
+      $ui = $(options._templates.container).addClass(NAME);
+      options.placeUI($ui, $textarea);
       if (options.remember){
-        prefs.attachTo($container);
+        prefs.attachTo($ui, $textarea);
       }
     }
-    $container.append($control);
-    return $control;
+    $btnItem.appendTo($ui);
   };
 
 
@@ -133,16 +165,13 @@
   var makeOnLoad = function(editor){
     return function(){
       // If editor needs to do some initialization, do it now.
-      if (editor.init){
-        editor.init();
-      }
+      editor.init && editor.init();
 
       $textareas.each(function(idx, textarea){
         var $textarea = $(textarea);
 
         // TODO set text() of button better
-        var $control = $("<button class='btn btn-mini prefs-selector' type=button></button>")
-          .html(editor.button || editor.name)
+        var $control = $(options._templates.item.replace('{{label}}', editor.button || editor.name))
           .data(NAME, editor)
           .on('click.' + NAME, function () {
             var activeEditor = $textarea.data(NAME);
@@ -163,7 +192,7 @@
         placeControls($control, $textarea);
 
         // autoload editor
-        var editorToAutoload = (prefs[textarea.id] || $textarea.attr('data-editor') || prefs.NONE);
+        var editorToAutoload = (prefs.get(textarea.id) || $textarea.attr('data-editor') || prefs.NONE);
         if (editor.name.toUpperCase() == editorToAutoload.toUpperCase()){
           editor.enable(textarea);
           $control.addClass(ACTIVE_CLASS);
@@ -179,6 +208,11 @@
     var j;
 
     options = $.extend({}, defaultOptions, opts || {});
+    // extract juicy bits from template option
+    var $template = $(options.template),
+        $btn = $template.find('.prefs-selector').remove();
+    options._templates.container = $template[0].outerHTML,  // XXX what's outerHTML support?
+    options._templates.item = $btn[0].outerHTML;
     $textareas = $(options.textareas);
     if (!$textareas.length){ return; }
 
@@ -192,12 +226,7 @@
           }
         }
         if (editor.js){
-          if (editor.js.length > 1) {
-            $.getScripts(editor.js, editor.onLoad);
-          }
-          else {
-            $.getScript(editor.js[0], editor.onLoad);
-          }
+          $.getScripts(editor.js, editor.onLoad);
         }
       } else {
         editor.onLoad();
@@ -228,7 +257,7 @@
 
 
   // exports
-  exports.superTextareas = {
+  exports.infiniteProteus = {
     addEditor: addEditor,
     init: init,
     forget: prefs && prefs.clear,

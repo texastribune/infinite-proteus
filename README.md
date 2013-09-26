@@ -16,7 +16,7 @@ Include the script:
 
 Add editors:
 
-    proteus.addEditor(editor);
+    infiniteProteus.addEditor(editor);
 
 Where an editor is an Object with these options:
 
@@ -50,7 +50,7 @@ Where an editor is an Object with these options:
 Initialize the script:
 
     <script>
-      proteus.init(options);
+      infiniteProteus.init(options);
     </script>
 
 Options:
@@ -98,7 +98,7 @@ enabled and the user prefers another editor.
 This script will remember the last editor used (including deciding not to an
 editor) based on the textarea's id and the editor's name.
 
-To clear preferences, hook up the `proteus.forget()` method.
+To clear preferences, hook up the `infiniteProteus.forget()` method.
 
 ### Widget
 

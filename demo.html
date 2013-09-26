@@ -75,13 +75,13 @@
           "assets/css/editorial.css"
         ];
   </script>
-  <script src="src/textareas.js"></script>
+  <script src="src/infiniteProteus.js"></script>
   <script src="editors/editor.tinymce.js"></script>
   <script src="editors/editor.wysihtml5.js"></script>
   <script src="editors/editor.codemirror.js"></script>
   <script src="editors/editor.markdown.js"></script>
   <script>
-    superTextareas.init();
+    infiniteProteus.init();
   </script>
   <script>
     // Demo JS
@@ -110,7 +110,7 @@
     $(window).load(load).on('unload', save);
 
     $('#clear-prefs').click(function () {
-      superTextareas.forget();  // hook up `forget` method.
+      infiniteProteus.forget();  // hook up `forget` method.
       store.clear();
     });
   </script>
