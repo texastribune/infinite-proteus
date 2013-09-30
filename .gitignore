@@ -1,1 +1,5 @@
+# submodules
 node_modules/
+
+# scat
+.DS_Store
