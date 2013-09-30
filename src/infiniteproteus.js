@@ -73,12 +73,15 @@
   //
   // The raw data is stored in the `data` attribute as a key/value of the
   // textarea id/editor name.
-  var Prefs = function () {
+  var Prefs = function (options) {
     this.NONE = "none";  // should be truthy
     // WISHLIST feature detect localStorage among other things
     this.storage = window.localStorage;  // storage backend
     this.storageKey = NAME;
     this.data = undefined;
+    if (options.keyMaker) {
+      this.keyMaker = options.keyMaker;
+    }
     this.load();
   };
   // load preferences from localStorage
@@ -91,6 +94,14 @@
   Prefs.prototype.save = function () {
     this.storage.setItem(this.storageKey, JSON.stringify(this.data));
   };
+  // override this to customize the keys
+  // for example, to include the url path in the key:
+  //
+  //     return window.location.pathname + '#' + key;
+  //
+  Prefs.prototype.keyMaker = function (key) {
+    return key;
+  };
   // attach listeners
   //
   // whatever widget is in charge of selecting the editor, it should have the
@@ -100,13 +111,12 @@
     // get the id of the textarea the nav controls, this will work for now.
     var self = this,
         key = $textarea.attr('id');
-    key = window.location.pathname + '#' + key;
     // use deferred events to be super flexible
     $widgetParent.on("click." + NAME, ".prefs-selector", function(){
       var $this = $(this),
           name = $this.data(NAME).name,
           active = $this.hasClass(ACTIVE_CLASS);
-      self.data[key] = active ? name : self.NONE;  // store NONE to signify don't use any editors
+      self.data[self.keyMaker(key)] = active ? name : self.NONE;  // store NONE to signify don't use any editors
       self.save();
     });
   };
@@ -116,8 +126,7 @@
   };
   // get preference for `key`
   Prefs.prototype.get = function (key) {
-    key = window.location.pathname + '#' + key;
-    return this.data[key];
+    return this.data[this.keyMaker(key)];
   };
 
 
@@ -234,7 +243,11 @@
     });
 
     if (options.remember){
-      prefs = new Prefs();
+      var prefOptions = {};
+      if (typeof options.remember === "function") {
+        prefOptions.keyMaker = options.remember;
+      }
+      prefs = new Prefs(prefOptions);
     }
   };
 
