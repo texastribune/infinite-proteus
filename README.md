@@ -61,6 +61,8 @@ Options:
     remember  : Boolean (default: true)
                 Remember the user's editor preferences. Requires HTML5
                 localstorage. Users' preferences override the default editor.
+                *semi-documented:* If you specify a function, this function is
+                used to determine how preferences are saved.
 
 Methods:
 
