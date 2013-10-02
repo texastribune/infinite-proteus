@@ -177,7 +177,8 @@
       editor.init && editor.init();
 
       $textareas.each(function(idx, textarea){
-        var $textarea = $(textarea);
+        var $textarea = $(textarea),
+            dataEditor = $textarea.attr('data-editor');
 
         // TODO set text() of button better
         var $control = $(options._templates.item.replace('{{label}}', editor.button || editor.name))
@@ -197,11 +198,14 @@
               $textarea.data(NAME, editor);
             }
           });
+        if (dataEditor && editor.name.toUpperCase() == dataEditor.toUpperCase()) {
+          $control.addClass(NAME + '-default');
+        }
 
         placeControls($control, $textarea);
 
         // autoload editor
-        var editorToAutoload = (prefs.get(textarea.id) || $textarea.attr('data-editor') || prefs.NONE);
+        var editorToAutoload = (prefs.get(textarea.id) || dataEditor || prefs.NONE);
         if (editor.name.toUpperCase() == editorToAutoload.toUpperCase()){
           editor.enable(textarea);
           $control.addClass(ACTIVE_CLASS);
