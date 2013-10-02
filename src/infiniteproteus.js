@@ -116,8 +116,14 @@
     $widgetParent.on("click." + NAME, ".prefs-selector", function(){
       var $this = $(this),
           name = $this.data(NAME).name,
-          active = $this.hasClass(options.activeBtnClass);
-      self.data[self.keyMaker(key)] = active ? name : self.NONE;  // store NONE to signify don't use any editors
+          isActive = $this.hasClass(options.activeBtnClass),
+          value = isActive ? name : self.NONE,
+          defaultValue = $textarea.attr('data-editor') || self.NONE;
+      if (value.toUpperCase() === defaultValue.toUpperCase()) {
+        self.data[self.keyMaker(key)] = undefined;
+      } else {
+        self.data[self.keyMaker(key)] = value;
+      }
       self.save();
     });
   };
