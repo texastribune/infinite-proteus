@@ -1,4 +1,4 @@
-/* infiniteproteus - v0.1.1 - 2013-09-30 */
+/* infiniteproteus - v0.2.0 - 2013-10-02 */
 /*jshint loopfunc:false, expr:true */
 /*globals $, console */
 // goes through all textareas and enables optional editors
@@ -8,8 +8,7 @@
   // CONFIGURATION
 
   // This is the class that gets set on the widget that represents the editor.
-  var ACTIVE_CLASS = 'btn-primary',
-      NAME = 'finiteEruptions';
+  var NAME = 'finiteEruptions';
 
 
   // Default Options
@@ -24,6 +23,8 @@
       '  <button class="btn btn-mini prefs-selector" type=button>{{label}}</button>' +
       '</div>',
 
+    // the class that will be on the active editor's button
+    activeBtnClass: 'btn-primary',
     // how to get to the UI from the $textarea
     // @returns $ui
     getUI: function($textarea) {
@@ -116,8 +117,14 @@
     $widgetParent.on("click." + NAME, ".prefs-selector", function(){
       var $this = $(this),
           name = $this.data(NAME).name,
-          active = $this.hasClass(ACTIVE_CLASS);
-      self.data[self.keyMaker(key)] = active ? name : self.NONE;  // store NONE to signify don't use any editors
+          isActive = $this.hasClass(options.activeBtnClass),
+          value = isActive ? name : self.NONE,
+          defaultValue = $textarea.attr('data-editor') || self.NONE;
+      if (value.toUpperCase() === defaultValue.toUpperCase()) {
+        self.data[self.keyMaker(key)] = undefined;
+      } else {
+        self.data[self.keyMaker(key)] = value;
+      }
       self.save();
     });
   };
@@ -178,7 +185,8 @@
       editor.init && editor.init();
 
       $textareas.each(function(idx, textarea){
-        var $textarea = $(textarea);
+        var $textarea = $(textarea),
+            dataEditor = $textarea.attr('data-editor');
 
         // TODO set text() of button better
         var $control = $(options._templates.item.replace('{{label}}', editor.button || editor.name))
@@ -188,24 +196,27 @@
             if (activeEditor){
               // console.log("disable", activeEditor.name)
               activeEditor.disable(textarea);
-              $control.removeClass(ACTIVE_CLASS).siblings().removeClass(ACTIVE_CLASS);
+              $control.removeClass(options.activeBtnClass).siblings().removeClass(options.activeBtnClass);
               $textarea.data(NAME, '');
             }
             if (!activeEditor || editor.name != activeEditor.name){
               // console.log("enable", editor.name)
               editor.enable(textarea);
-              $control.addClass(ACTIVE_CLASS);
+              $control.addClass(options.activeBtnClass);
               $textarea.data(NAME, editor);
             }
           });
+        if (dataEditor && editor.name.toUpperCase() == dataEditor.toUpperCase()) {
+          $control.addClass(NAME + '-default');
+        }
 
         placeControls($control, $textarea);
 
         // autoload editor
-        var editorToAutoload = (prefs.get(textarea.id) || $textarea.attr('data-editor') || prefs.NONE);
+        var editorToAutoload = (prefs.get(textarea.id) || dataEditor || prefs.NONE);
         if (editor.name.toUpperCase() == editorToAutoload.toUpperCase()){
           editor.enable(textarea);
-          $control.addClass(ACTIVE_CLASS);
+          $control.addClass(options.activeBtnClass);
           $textarea.data(NAME, editor);
         }
       });
