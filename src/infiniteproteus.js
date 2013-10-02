@@ -7,8 +7,7 @@
   // CONFIGURATION
 
   // This is the class that gets set on the widget that represents the editor.
-  var ACTIVE_CLASS = 'btn-primary',
-      NAME = 'finiteEruptions';
+  var NAME = 'finiteEruptions';
 
 
   // Default Options
@@ -23,6 +22,8 @@
       '  <button class="btn btn-mini prefs-selector" type=button>{{label}}</button>' +
       '</div>',
 
+    // the class that will be on the active editor's button
+    activeBtnClass: 'btn-primary',
     // how to get to the UI from the $textarea
     // @returns $ui
     getUI: function($textarea) {
@@ -115,7 +116,7 @@
     $widgetParent.on("click." + NAME, ".prefs-selector", function(){
       var $this = $(this),
           name = $this.data(NAME).name,
-          active = $this.hasClass(ACTIVE_CLASS);
+          active = $this.hasClass(options.activeBtnClass);
       self.data[self.keyMaker(key)] = active ? name : self.NONE;  // store NONE to signify don't use any editors
       self.save();
     });
@@ -188,13 +189,13 @@
             if (activeEditor){
               // console.log("disable", activeEditor.name)
               activeEditor.disable(textarea);
-              $control.removeClass(ACTIVE_CLASS).siblings().removeClass(ACTIVE_CLASS);
+              $control.removeClass(options.activeBtnClass).siblings().removeClass(options.activeBtnClass);
               $textarea.data(NAME, '');
             }
             if (!activeEditor || editor.name != activeEditor.name){
               // console.log("enable", editor.name)
               editor.enable(textarea);
-              $control.addClass(ACTIVE_CLASS);
+              $control.addClass(options.activeBtnClass);
               $textarea.data(NAME, editor);
             }
           });
@@ -208,7 +209,7 @@
         var editorToAutoload = (prefs.get(textarea.id) || dataEditor || prefs.NONE);
         if (editor.name.toUpperCase() == editorToAutoload.toUpperCase()){
           editor.enable(textarea);
-          $control.addClass(ACTIVE_CLASS);
+          $control.addClass(options.activeBtnClass);
           $textarea.data(NAME, editor);
         }
       });
